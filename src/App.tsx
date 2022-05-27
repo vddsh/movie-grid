@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MovieCard } from './components/MovieCard/MovieCard';
 import { Filter } from './components/Filter/Filter';
 
-const API_KEY = '90c066276720575cd2dff240ea7c2856';
+const API_KEY = '';
 
 function App() {
   const [popular, setPopular] = useState([]);
