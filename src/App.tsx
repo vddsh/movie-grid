@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+
+import styles from './index.module.scss';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import { MovieCard } from './components/MovieCard/MovieCard';
+import { Filter } from './components/Filter/Filter';
+
+const API_KEY = '90c066276720575cd2dff240ea7c2856';
 
 function App() {
+  const [popular, setPopular] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [activeGenre, setActiveGenre] = useState(0);
+
+  const fetchPopular = async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`
+      );
+      const movies = await data.json();
+      setPopular(movies.results);
+      setFiltered(movies.results);
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    fetchPopular();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Filter
+        popular={popular}
+        setFiltered={setFiltered}
+        activeGenre={activeGenre}
+        setActiveGenre={setActiveGenre}
+      />
+      <motion.div layout className={styles.popular}>
+        <AnimatePresence>
+          {filtered.map((el: any) => (
+            <MovieCard key={el.id} url={el.poster_path} title={el.title} />
+          ))}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
